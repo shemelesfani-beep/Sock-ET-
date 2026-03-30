@@ -1,0 +1,124 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --font-headline: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface-bright: #2c2c2c;
+  --color-error-container: #9f0519;
+  --color-surface-variant: #262626;
+  --color-on-primary: #005d33;
+  --color-primary-fixed-dim: #38ee90;
+  --color-tertiary-dim: #00c7eb;
+  --color-tertiary-fixed: #00d6fc;
+  --color-on-error-container: #ffa8a3;
+  --color-error: #ff716c;
+  --color-surface: #0e0e0e;
+  --color-primary-dim: #38ee90;
+  --color-secondary-fixed-dim: #d4d4d9;
+  --color-tertiary-container: #00d6fc;
+  --color-on-tertiary-container: #004553;
+  --color-inverse-on-surface: #565555;
+  --color-primary-fixed: #4dfd9d;
+  --color-tertiary: #70e0ff;
+  --color-on-secondary: #505256;
+  --color-on-primary-fixed: #004826;
+  --color-surface-container-low: #131313;
+  --color-outline-variant: #484847;
+  --color-primary: #4dfd9d;
+  --color-secondary-dim: #d4d4d9;
+  --color-inverse-surface: #fcf9f8;
+  --color-secondary: #e2e2e7;
+  --color-on-tertiary: #004f5e;
+  --color-surface-dim: #0e0e0e;
+  --color-surface-container-lowest: #000000;
+  --color-on-surface: #ffffff;
+  --color-on-error: #490006;
+  --color-surface-container: #1a1a1a;
+  --color-outline: #767575;
+  --color-inverse-primary: #006e3d;
+  --color-on-tertiary-fixed: #002f39;
+  --color-background: #0e0e0e;
+  --color-error-dim: #d7383b;
+  --color-secondary-fixed: #e2e2e7;
+  --color-on-secondary-fixed-variant: #5a5b60;
+  --color-on-background: #ffffff;
+  --color-on-surface-variant: #adaaaa;
+  --color-on-secondary-container: #cfd0d5;
+  --color-secondary-container: #45474b;
+  --color-on-primary-container: #004625;
+  --color-primary-container: #12dd81;
+  --color-tertiary-fixed-dim: #00c7eb;
+  --color-surface-container-high: #20201f;
+  --color-surface-container-highest: #262626;
+  --color-on-secondary-fixed: #3d3f43;
+  --color-on-tertiary-fixed-variant: #004e5e;
+  --color-surface-tint: #4dfd9d;
+  --color-on-primary-fixed-variant: #006839;
+  --color-warning: #f59e0b;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container;
+    min-height: max(884px, 100dvh);
+  }
+}
+
+.amharic-text {
+  line-height: 1.4;
+}
+
+.bg-kinetic-gradient {
+  background: linear-gradient(135deg, #4dfd9d 0%, #12dd81 100%);
+}
+
+/* Leaflet Popup Styling */
+.leaflet-popup-content-wrapper {
+  @apply bg-surface-container-highest/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-0 overflow-hidden;
+}
+
+.leaflet-popup-content {
+  @apply !m-0;
+}
+
+.leaflet-popup-tip {
+  @apply !bg-surface-container-highest/95;
+}
+
+.leaflet-container {
+  @apply !font-body;
+}
+
+.custom-cluster-icon {
+  @apply !flex !items-center !justify-center;
+}
+
+.charger-popup .leaflet-popup-close-button {
+  @apply !text-on-surface-variant hover:!text-on-surface !p-2;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: #262626;
+  height: 8px;
+  border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -12px;
+  background-color: #4dfd9d;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(77, 253, 157, 0.4);
+}

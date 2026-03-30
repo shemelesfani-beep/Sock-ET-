@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Information about a user",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique identifier for the user" },
+        "phoneNumber": { "type": "string", "description": "The user's phone number" },
+        "displayName": { "type": "string", "description": "The user's display name" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the user was created" }
+      },
+      "required": ["uid", "phoneNumber"]
+    },
+    "Booking": {
+      "title": "Charging Booking",
+      "description": "Details of a past charging booking",
+      "type": "object",
+      "properties": {
+        "chargerId": { "type": "string", "description": "ID of the charger used" },
+        "chargerName": { "type": "string", "description": "Name of the charger used" },
+        "bookingFee": { "type": "number", "description": "Total cost of the booking" },
+        "duration": { "type": "number", "description": "Duration in seconds" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When the booking occurred" }
+      },
+      "required": ["chargerId", "chargerName", "bookingFee", "duration", "timestamp"]
+    },
+    "Station": {
+      "title": "Charging Station",
+      "description": "Information about a charging station",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID" },
+        "name": { "type": "string", "description": "Station name" },
+        "nameAm": { "type": "string", "description": "Station name in Amharic" },
+        "lat": { "type": "number", "description": "Latitude" },
+        "lng": { "type": "number", "description": "Longitude" },
+        "power": { "type": "number", "description": "Power in kW" },
+        "status": { "type": "string", "enum": ["AVAILABLE", "OCCUPIED", "OFFLINE"], "description": "Current status" },
+        "slots": { "type": "string", "description": "Available slots text" },
+        "slotsAm": { "type": "string", "description": "Available slots text in Amharic" },
+        "distance": { "type": "string", "description": "Distance from user" },
+        "time": { "type": "string", "description": "Time to reach" },
+        "price": { "type": "string", "description": "Price per kWh" },
+        "priceAm": { "type": "string", "description": "Price per kWh in Amharic" },
+        "vehicleType": { "type": "string", "enum": ["All", "Car", "Bike", "Bus"], "description": "Supported vehicle type" },
+        "images": { "type": "array", "items": { "type": "string" }, "description": "Station images" },
+        "connectors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string" },
+              "status": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["id", "name", "lat", "lng", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/users/{uid}/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "User's past charging bookings"
+    },
+    "/stations/{stationId}": {
+      "schema": "Station",
+      "description": "Charging stations"
+    }
+  }
+}

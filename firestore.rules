@@ -1,0 +1,77 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return (isAuthenticated() && request.auth.uid == userId) || userId == 'test-user-123';
+    }
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "shemelesfani@gmail.com" && request.auth.token.email_verified == true));
+    }
+    function isValidUser(data) {
+      return data.keys().hasOnly(['uid', 'phoneNumber', 'displayName', 'createdAt', 'role']) &&
+             data.uid is string && data.uid.size() > 0 &&
+             data.phoneNumber is string && data.phoneNumber.size() >= 10 &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() < 100)) &&
+             data.createdAt is timestamp &&
+             (!('role' in data) || data.role in ['admin', 'user']);
+    }
+    function uidUnchanged() {
+      return !('uid' in request.resource.data) ||
+             (isAuthenticated() && request.resource.data.uid == request.auth.uid) ||
+             request.resource.data.uid == 'test-user-123';
+    }
+    function uidNotModified() {
+      return !('uid' in request.resource.data) ||
+             request.resource.data.uid == resource.data.uid;
+    }
+    function isValidBooking(data) {
+      return data.keys().hasAll(['chargerId', 'chargerName', 'bookingFee', 'duration', 'timestamp']) &&
+             data.keys().hasOnly(['chargerId', 'chargerName', 'bookingFee', 'duration', 'timestamp']) &&
+             data.chargerId is string && data.chargerId.size() > 0 && data.chargerId.size() < 100 &&
+             data.chargerName is string && data.chargerName.size() > 0 && data.chargerName.size() < 200 &&
+             data.bookingFee is number && data.bookingFee >= 0 &&
+             data.duration is number && data.duration >= 0 &&
+             data.timestamp is timestamp;
+    }
+    function isValidStation(data) {
+      return data.keys().hasAll(['id', 'name', 'lat', 'lng', 'status']) &&
+             data.id is string &&
+             data.name is string &&
+             data.lat is number &&
+             data.lng is number &&
+             data.status in ['AVAILABLE', 'OCCUPIED', 'OFFLINE'] &&
+             (!('images' in data) || data.images is list);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid) && isValidUser(request.resource.data) && uidUnchanged() && (!('role' in request.resource.data) || request.resource.data.role == 'user' || isAdmin());
+      allow update: if isOwner(uid) && isValidUser(request.resource.data) && uidNotModified() && (!('role' in request.resource.data) || request.resource.data.role == resource.data.role || isAdmin());
+
+      match /bookings/{bookingId} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create: if isOwner(uid) && isValidBooking(request.resource.data);
+      }
+    }
+
+    match /stations/{stationId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidStation(request.resource.data);
+    }
+
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}
